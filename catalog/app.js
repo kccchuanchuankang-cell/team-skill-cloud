@@ -180,6 +180,8 @@ function buildOpenskillsSection(skillName) {
     ? `<p class="cmd-note">${escapeHtml(catalogConfig.config_note)}</p>`
     : "";
 
+  const openskillsPrereq = `<p class="cmd-note">需 <a href="https://nodejs.org/" target="_blank" rel="noopener noreferrer">Node.js</a> <strong>20.6 及以上</strong>（OpenSkills 要求 <code>&gt;=20.6.0</code>，终端执行 <code>node -v</code> 查看；建议官网 LTS）。下方 <code>npx openskills</code> 无需事先全局安装 CLI。</p>`;
+
   const block = (label, text) => `
     <p class="cmd-label">${escapeHtml(label)}</p>
     <div class="cmd-row">
@@ -200,12 +202,54 @@ function buildOpenskillsSection(skillName) {
       : nonGithubNote
   ].join("");
 
+  const commonCommandsSnippet = [
+    "# 列出已安装技能",
+    "npx openskills list",
+    "",
+    "# 从 GitHub 安装（简写示例：Anthropic 官方技能库）",
+    "npx openskills install anthropics/skills",
+    "",
+    "# 写入 / 更新项目中的 AGENTS.md",
+    "npx openskills sync",
+    "",
+    "# 在终端输出技能内容（示例为当前技能）",
+    readCmd,
+    "",
+    "# 从安装来源更新技能（默认全部；可指定多个技能目录名）",
+    "npx openskills update",
+    "npx openskills update skill-a skill-b",
+    "",
+    "# 交互式管理或移除",
+    "npx openskills manage",
+    "npx openskills remove <技能目录名>",
+    "",
+    "# 查看帮助",
+    "npx openskills help",
+    "npx openskills help install"
+  ].join("\n");
+
+  const commonCommandsSection = `
+      <details class="cmd-more">
+        <summary>openskills常用命令速查（list / sync / read / update …）</summary>
+        <div class="cmd-more-body">
+          <p class="cmd-note">均以 <code>npx openskills</code> 为例；若已全局安装可省略 <code>npx</code>。</p>
+          <p class="cmd-label">命令参考</p>
+          <div class="cmd-row">
+            <pre class="cmd-snippet"><code>${escapeHtml(commonCommandsSnippet)}</code></pre>
+            <button type="button" class="cmd-copy" data-copy-payload="${escapeHtml(encodeURIComponent(commonCommandsSnippet))}">复制</button>
+          </div>
+        </div>
+      </details>`;
+
   return `
     <div class="detail-section">
       <h3>OpenSkills</h3>
+      ${openskillsPrereq}
+      ${block("安装 OpenSkills CLI（可选，全局）", "node -v\nnpm install -g openskills\nopenskills --version")}
       ${gh ? block("仅安装本技能", `npx openskills install ${singlePath}\n${sync}`) : ""}
       ${block("安装整个技能仓（HTTPS，推荐）", `${installHttps}\n${sync}`)}
       ${block("在终端加载本技能", readCmd)}
+      ${commonCommandsSection}
       <details class="cmd-more">
         <summary>更多安装方式（SSH、通用路径等）</summary>
         <div class="cmd-more-body">

@@ -12,13 +12,36 @@ Recommended defaults:
 
 To browse available skills before installation, use the repository catalog described in [docs/WEB_CATALOG.md](WEB_CATALOG.md).
 
+## Installing OpenSkills
+
+You need **[Node.js](https://nodejs.org/) 20.6 or newer** — the published `openskills` package declares `engines.node: '>=20.6.0'`. Verify:
+
+```powershell
+node -v
+```
+
+Current **LTS** releases from nodejs.org (e.g. 20.x, 22.x) satisfy this; **Node 18** is below the requirement and may fail.
+
+**Option A — no global install (recommended in docs below):** run commands as `npx openskills …`. npm downloads the CLI for that run; nothing to install globally.
+
+**Option B — global CLI** (then you can type `openskills` instead of `npx openskills`):
+
+```powershell
+node -v
+npm install -g openskills
+openskills --version
+```
+
+Upstream project: [numman-ali/openskills](https://github.com/numman-ali/openskills).
+
 ## Typical Workflow
 
-1. Choose the needed skills for the project.
-2. Install from the team skills repository.
-3. Run `npx openskills sync`.
-4. Review the generated `AGENTS.md`.
-5. Commit the installed skills and sync output according to team policy.
+1. Install OpenSkills (see [Installing OpenSkills](#installing-openskills) above).
+2. Choose the needed skills for the project.
+3. Install from the team skills repository.
+4. Run `npx openskills sync`.
+5. Review the generated `AGENTS.md`.
+6. Commit the installed skills and sync output according to team policy.
 
 ## Suggested Commands
 

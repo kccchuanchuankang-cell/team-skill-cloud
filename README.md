@@ -62,10 +62,11 @@ skills-cloud/
 ## Recommended Project Workflow
 
 1. Pick the skills a project actually needs.
-2. Install them from this repository with OpenSkills.
-3. Run `npx openskills sync` in the project repository.
-4. Review the generated `AGENTS.md` changes in a pull request.
-5. Upgrade skills intentionally by version or tag, not by surprise.
+2. Install **[OpenSkills](https://github.com/numman-ali/openskills)** (**Node.js 20.6+**; check `node -v`): use `npx openskills …` or `npm install -g openskills` — see [docs/PROJECT_USAGE.md#installing-openskills](docs/PROJECT_USAGE.md#installing-openskills).
+3. Install skills from this repository with OpenSkills.
+4. Run `npx openskills sync` in the project repository.
+5. Review the generated `AGENTS.md` changes in a pull request.
+6. Upgrade skills intentionally by version or tag, not by surprise.
 
 See [docs/PROJECT_USAGE.md](docs/PROJECT_USAGE.md) for the project-side workflow and [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md) for the rollout plan. [CONTRIBUTING.md](CONTRIBUTING.md) covers validation and catalog regeneration before a PR.
 

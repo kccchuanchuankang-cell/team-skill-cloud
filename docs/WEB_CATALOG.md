@@ -32,7 +32,7 @@ The catalog data file is generated from the `meta.json` files and should not be 
 
 - [catalog/catalog-config.json](catalog/catalog-config.json) can **override** generated values; by default `scripts/generate-catalog.ps1` **auto-fills** clone URLs and source links from **`git remote get-url origin`** and the current **HEAD** (branch name, or commit SHA when detached—e.g. GitHub Actions).
 - Run `scripts/generate-catalog.ps1` so [catalog/data/skills.js](catalog/data/skills.js) embeds `window.CATALOG_CONFIG` next to `window.SKILLS_DATA`.
-- The skill detail panel shows install + `sync`, **per-skill** `owner/repo/skills/<name>` installs (when the clone URL is GitHub), whole-registry `--universal`, and `npx openskills read <skill-name>` with copy buttons.
+- The skill detail panel shows **Node.js 20.6+** and **how to install the OpenSkills CLI** (optional global install), then install + `sync`, **per-skill** `owner/repo/skills/<name>` installs (when the clone URL is GitHub), whole-registry `--universal`, and `npx openskills read <skill-name>` with copy buttons. A **collapsible “常用命令速查”** summarizes `list`, `sync`, `read`, `update`, `manage`, `remove`, and `help`.
 - **Repository paths** in the UI stay **repo-relative** (`skills/<id>/SKILL.md`). When generation runs inside a clone, **GitHub** and **GitLab** remotes also get `skill_web_url` / `meta_web_url` for “open in browser” links.
 - Set **`disable_git_origin`: true** in `catalog-config.json` to turn off auto-detection and use only defaults + manual overrides.
 
