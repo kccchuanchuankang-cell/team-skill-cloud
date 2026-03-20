@@ -1,0 +1,7 @@
+version: 1
+display_name: Bitbucket Code Review
+short_description: Bitbucket PR diff fetch and team-standard Java/error-code prereview
+default_prompt: >-
+  Follow SKILL.md and references/CODE-PREREVIEW-GUIDE.md. Fetch the PR diff with
+  scripts/fetch_pr_diff.py when the user provides a URL, then review against
+  CODE-STANDARDS.md and ERROR-CODE-STANDARDS.md; output a structured review report.

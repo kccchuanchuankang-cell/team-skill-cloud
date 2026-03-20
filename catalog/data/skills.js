@@ -25,6 +25,32 @@ window.SKILLS_DATA = [
         "meta_web_url":  "https://github.com/kccchuanchuankang-cell/team-skill-cloud/blob/main/skills/backend-api/meta.json"
     },
     {
+        "name":  "bitbucket-code-review",
+        "title":  "Bitbucket Code Review",
+        "description":  "Bitbucket Cloud PR diff fetch plus AI prereview against team Java and error-code standards.",
+        "tags":  [
+                     "bitbucket",
+                     "code-review",
+                     "java",
+                     "pull-request",
+                     "prereview"
+                 ],
+        "owner":  "platform-team",
+        "status":  "active",
+        "version":  "0.1.1",
+        "summary":  "Use when the user pastes a Bitbucket PR URL or asks for code review, CR, prereview, or 代码审查 with team CODE-STANDARDS and ERROR-CODE-STANDARDS.",
+        "use_cases":  [
+                          "Fetch a Bitbucket Cloud PR diff and review encoding, architecture, and error handling",
+                          "Produce a structured prereport before formal team review",
+                          "Check Java changes against bundled coding and error-code reference docs"
+                      ],
+        "install_hint":  "Install for Bitbucket Cloud workflows that need scripted diff download and consistent review checklists.",
+        "skill_path":  "skills/bitbucket-code-review/SKILL.md",
+        "meta_path":  "skills/bitbucket-code-review/meta.json",
+        "skill_web_url":  "https://github.com/kccchuanchuankang-cell/team-skill-cloud/blob/main/skills/bitbucket-code-review/SKILL.md",
+        "meta_web_url":  "https://github.com/kccchuanchuankang-cell/team-skill-cloud/blob/main/skills/bitbucket-code-review/meta.json"
+    },
+    {
         "name":  "frontend-react",
         "title":  "Frontend React",
         "description":  "React UI implementation aligned to team frontend conventions.",

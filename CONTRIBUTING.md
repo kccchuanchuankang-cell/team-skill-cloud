@@ -1,7 +1,7 @@
 # Contributing
 
 1. Read [docs/GOVERNANCE.md](docs/GOVERNANCE.md) for ownership, versioning, and what counts as a breaking change.
-2. New or updated skills: copy [templates/skill-template/SKILL.md](templates/skill-template/SKILL.md), add `meta.json` beside it, keep `SKILL.md` short and put detail under `references/`.
+2. **New skill (scaffold):** run `powershell -ExecutionPolicy Bypass -File .\scripts\new-skill.ps1 -Name your-skill-id`, then replace all `TODO` / `your-team` in `meta.json` and edit `SKILL.md`. Or manually copy [templates/skill-template/SKILL.md](templates/skill-template/SKILL.md) and add `meta.json` beside it. Keep `SKILL.md` short; put detail under `references/`.
 3. If you change how or when a skill applies, bump `version` in that skill’s `meta.json` per [docs/GOVERNANCE.md](docs/GOVERNANCE.md#per-skill-version-in-metajson).
 
 4. Before opening a PR:

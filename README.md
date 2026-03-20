@@ -36,6 +36,7 @@ skills-cloud/
 │   ├── export-site.ps1
 │   ├── generate-catalog.ps1
 │   ├── install-skills-at-ref.ps1
+│   ├── new-skill.ps1
 │   ├── validate-skills.py
 │   └── watch-catalog.ps1
 ├── .github/

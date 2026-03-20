@@ -1,0 +1,17 @@
+{
+  "skill_name": "bitbucket-code-review",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "请审查这个 PR：https://bitbucket.org/example/workspace/pull-requests/42，已配置 BITBUCKET_API_TOKEN 与 BITBUCKET_USERNAME。按团队规范输出审查报告。",
+      "expected_output": "运行 fetch_pr_diff 或说明无法访问；报告含编码规范、错误码（如适用）、架构项，且章节符合 CODE-PREREVIEW-GUIDE。",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "对当前分支相对 main 的 Java 变更做一次 prereview，对照 ERROR-CODE-STANDARDS 看异常与错误码是否合规。",
+      "expected_output": "若未提供 PR URL，应说明需 URL 或本地 diff；若给 diff，则按规范检查 ErrorCategory/ErrorCode/文案规则。",
+      "files": []
+    }
+  ]
+}
