@@ -1,3 +1,5 @@
+# Prerequisite: Repo Settings → Pages → Build and deployment → Source: GitHub Actions
+# (Otherwise configure-pages fails with "Get Pages site failed" / API Not Found.)
 name: Deploy Catalog To GitHub Pages
 
 on:

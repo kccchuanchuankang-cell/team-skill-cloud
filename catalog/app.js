@@ -63,6 +63,31 @@ function repositoryPathRow(relPath, webUrl) {
   return `<span class="path-link path-plain">${escapeHtml(pathStr)}</span>`;
 }
 
+/** 解析为 OpenSkills 支持的 GitHub 简写 owner/repo（用于 owner/repo/skills/技能名） */
+function deriveGithubShorthand() {
+  const https = String(catalogConfig.skills_repo_https || "").trim();
+  try {
+    const normalized = https.replace(/\.git$/i, "");
+    const u = new URL(normalized);
+    if (u.hostname.toLowerCase() !== "github.com") {
+      return null;
+    }
+    const seg = u.pathname.split("/").filter(Boolean);
+    if (seg.length >= 2) {
+      return `${seg[0]}/${seg[1]}`;
+    }
+  } catch {
+    /* ignore */
+  }
+  const ssh = String(catalogConfig.skills_repo_ssh || "").trim();
+  const m = ssh.match(/^git@github\.com:([^/]+)\/(.+)$/i);
+  if (!m) {
+    return null;
+  }
+  const repo = m[2].replace(/\.git$/i, "");
+  return `${m[1]}/${repo}`;
+}
+
 function buildOpenskillsSection(skillName) {
   const ssh = catalogConfig.skills_repo_ssh;
   const https = catalogConfig.skills_repo_https;
@@ -71,6 +96,8 @@ function buildOpenskillsSection(skillName) {
   const sync = "npx openskills sync";
   const universalSsh = `npx openskills install ${ssh} --universal`;
   const readCmd = `npx openskills read ${skillName}`;
+  const gh = deriveGithubShorthand();
+  const singlePath = gh ? `${gh}/skills/${skillName}` : "";
 
   const noteBlock = catalogConfig.config_note
     ? `<p class="cmd-note">${escapeHtml(catalogConfig.config_note)}</p>`
@@ -84,13 +111,23 @@ function buildOpenskillsSection(skillName) {
     </div>
   `;
 
+  const singleSkillBlocks = gh
+    ? `${block("仅安装本技能（GitHub 简写，项目内）", `npx openskills install ${singlePath}\n${sync}`)}${block(
+        "仅安装本技能（GitHub 简写 + .agent/skills）",
+        `npx openskills install ${singlePath} --universal\n${sync}`
+      )}`
+    : `<p class="cmd-note">仅安装一项技能时，OpenSkills 支持 <code>owner/repo/skills/技能目录名</code>。当前 clone 地址无法解析为 github.com 时，请先 <code>git clone</code> 本仓，再执行 <code>npx openskills install ./&lt;克隆路径&gt;/skills/${escapeHtml(
+        skillName
+      )}</code> 与 <code>npx openskills sync</code>。</p>`;
+
   return `
     <div class="detail-section">
       <h3>OpenSkills 命令</h3>
       ${noteBlock}
       ${block("安装技能仓（SSH，项目内）", `${installSsh}\n${sync}`)}
       ${block("安装技能仓（HTTPS，项目内）", `${installHttps}\n${sync}`)}
-      ${block("通用路径（.agent/skills）", `${universalSsh}\n${sync}`)}
+      ${singleSkillBlocks}
+      ${block("安装整个技能仓（通用路径 .agent/skills）", `${universalSsh}\n${sync}`)}
       ${block("在终端中加载本技能", readCmd)}
     </div>
   `;

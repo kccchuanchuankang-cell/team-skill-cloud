@@ -16,6 +16,7 @@ All notable changes to this registry are documented here. The project uses [Sema
 
 ### Changed
 
+- Catalog OpenSkills section shows **single-skill** `owner/repo/skills/<id>` commands when the configured remote is GitHub (plus `--universal` variant); otherwise a short fallback note
 - Catalog static site UI strings are **Simplified Chinese**; skill titles/descriptions still come from `meta.json`
 - `generate-catalog.ps1` reads `catalog-config.json` and each `meta.json` as **UTF-8** for non-ASCII text on Windows
 - Example `SKILL.md` reference links use repo-relative paths instead of machine-specific paths

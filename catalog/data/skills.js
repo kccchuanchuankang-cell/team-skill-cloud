@@ -1,4 +1,4 @@
-﻿window.CATALOG_CONFIG = {"skills_repo_ssh":"git@github.com:your-org/skills-cloud.git","skills_repo_https":"https://github.com/your-org/skills-cloud.git","config_note":"可在本文件中覆盖：skills_repo_ssh、skills_repo_https、source_ref（源码链接用的分支或提交）、repo_web_base。若设置 disable_git_origin 为 true，则不再从 git 自动探测。","repo_web_base":"","source_ref":"","remote_provider":"","remote_detected":false};
+﻿window.CATALOG_CONFIG = {"skills_repo_ssh":"git@github.com:kccchuanchuankang-cell/team-skill-cloud.git","skills_repo_https":"https://github.com/kccchuanchuankang-cell/team-skill-cloud.git","config_note":"可在本文件中覆盖：skills_repo_ssh、skills_repo_https、source_ref（源码链接用的分支或提交）、repo_web_base。若设置 disable_git_origin 为 true，则不再从 git 自动探测。","repo_web_base":"https://github.com/kccchuanchuankang-cell/team-skill-cloud","source_ref":"main","remote_provider":"github","remote_detected":true};
 window.SKILLS_DATA = [
     {
         "name":  "backend-api",
@@ -21,8 +21,8 @@ window.SKILLS_DATA = [
         "install_hint":  "Install for API services and full-stack projects that expose backend endpoints.",
         "skill_path":  "skills/backend-api/SKILL.md",
         "meta_path":  "skills/backend-api/meta.json",
-        "skill_web_url":  null,
-        "meta_web_url":  null
+        "skill_web_url":  "https://github.com/kccchuanchuankang-cell/team-skill-cloud/blob/main/skills/backend-api/SKILL.md",
+        "meta_web_url":  "https://github.com/kccchuanchuankang-cell/team-skill-cloud/blob/main/skills/backend-api/meta.json"
     },
     {
         "name":  "frontend-react",
@@ -45,8 +45,8 @@ window.SKILLS_DATA = [
         "install_hint":  "Install for React applications and full-stack projects with product UI work.",
         "skill_path":  "skills/frontend-react/SKILL.md",
         "meta_path":  "skills/frontend-react/meta.json",
-        "skill_web_url":  null,
-        "meta_web_url":  null
+        "skill_web_url":  "https://github.com/kccchuanchuankang-cell/team-skill-cloud/blob/main/skills/frontend-react/SKILL.md",
+        "meta_web_url":  "https://github.com/kccchuanchuankang-cell/team-skill-cloud/blob/main/skills/frontend-react/meta.json"
     },
     {
         "name":  "release-triage",
@@ -69,8 +69,8 @@ window.SKILLS_DATA = [
         "install_hint":  "Install for projects that want a reusable pre-release or regression review workflow.",
         "skill_path":  "skills/release-triage/SKILL.md",
         "meta_path":  "skills/release-triage/meta.json",
-        "skill_web_url":  null,
-        "meta_web_url":  null
+        "skill_web_url":  "https://github.com/kccchuanchuankang-cell/team-skill-cloud/blob/main/skills/release-triage/SKILL.md",
+        "meta_web_url":  "https://github.com/kccchuanchuankang-cell/team-skill-cloud/blob/main/skills/release-triage/meta.json"
     }
 ];
 

@@ -31,12 +31,42 @@ This script:
 
 This repository includes a workflow at [deploy-pages.yml](../.github/workflows/deploy-pages.yml).
 
+**Important:** Enable Pages **before** the workflow can succeed (see troubleshooting below if you see `Get Pages site failed` / `Not Found`).
+
 Recommended GitHub repository settings:
 
 1. Push this repository to GitHub.
-2. In repository settings, open `Pages`.
-3. Set `Source` to `GitHub Actions`.
-4. Merge changes to `main`.
+2. In repository settings, open **Settings → Pages**.
+3. Under **Build and deployment**, set **Source** to **GitHub Actions** (not “Deploy from a branch”).
+4. Merge changes to `main` (or run the workflow manually from the **Actions** tab).
+
+### Troubleshooting: `configure-pages` / `Get Pages site failed` / `Not Found`
+
+If **Annotations** show:
+
+`Get Pages site failed. Please verify that the repository has Pages enabled and configured to build using GitHub Actions`
+
+then Pages is not enabled for this repo, or the source is still “Deploy from a branch”.
+
+**Fix:**
+
+1. Go to the repository on GitHub → **Settings** → **Pages**.
+2. **Build and deployment** → **Source** → choose **GitHub Actions**.
+3. Save if prompted, then **re-run failed jobs** (Actions → failed run → **Re-run all jobs**).
+
+Optional: **Settings → Actions → General** → **Workflow permissions** → enable **Read and write permissions** if your org allows it (this repo’s workflow uses `pages: write` and `id-token: write`; default `GITHUB_TOKEN` is usually enough after Pages is enabled).
+
+The `enablement: true` input on `actions/configure-pages` only works with a **personal access token** (or app) with extra scopes—not the default `GITHUB_TOKEN`—so manual **Source: GitHub Actions** is the usual fix.
+
+### 中文摘要（同上）
+
+若 Actions 里出现 **Not Found** / **Get Pages site failed**：说明还没在仓库里打开 Pages，或没有用 **GitHub Actions** 作为发布源。
+
+1. 打开 **设置 → Pages**。  
+2. **构建与部署** 里把 **源** 选成 **GitHub Actions**（不要选「从分支部署」）。  
+3. 回到 **Actions**，**重新运行** 失败的工作流。
+
+完成后再推送 `main` 或手动触发 **Deploy Catalog To GitHub Pages** 即可。
 
 The workflow will:
 

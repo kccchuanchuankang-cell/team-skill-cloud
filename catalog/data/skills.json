@@ -20,8 +20,8 @@
         "install_hint":  "Install for API services and full-stack projects that expose backend endpoints.",
         "skill_path":  "skills/backend-api/SKILL.md",
         "meta_path":  "skills/backend-api/meta.json",
-        "skill_web_url":  null,
-        "meta_web_url":  null
+        "skill_web_url":  "https://github.com/kccchuanchuankang-cell/team-skill-cloud/blob/main/skills/backend-api/SKILL.md",
+        "meta_web_url":  "https://github.com/kccchuanchuankang-cell/team-skill-cloud/blob/main/skills/backend-api/meta.json"
     },
     {
         "name":  "frontend-react",
@@ -44,8 +44,8 @@
         "install_hint":  "Install for React applications and full-stack projects with product UI work.",
         "skill_path":  "skills/frontend-react/SKILL.md",
         "meta_path":  "skills/frontend-react/meta.json",
-        "skill_web_url":  null,
-        "meta_web_url":  null
+        "skill_web_url":  "https://github.com/kccchuanchuankang-cell/team-skill-cloud/blob/main/skills/frontend-react/SKILL.md",
+        "meta_web_url":  "https://github.com/kccchuanchuankang-cell/team-skill-cloud/blob/main/skills/frontend-react/meta.json"
     },
     {
         "name":  "release-triage",
@@ -68,7 +68,7 @@
         "install_hint":  "Install for projects that want a reusable pre-release or regression review workflow.",
         "skill_path":  "skills/release-triage/SKILL.md",
         "meta_path":  "skills/release-triage/meta.json",
-        "skill_web_url":  null,
-        "meta_web_url":  null
+        "skill_web_url":  "https://github.com/kccchuanchuankang-cell/team-skill-cloud/blob/main/skills/release-triage/SKILL.md",
+        "meta_web_url":  "https://github.com/kccchuanchuankang-cell/team-skill-cloud/blob/main/skills/release-triage/meta.json"
     }
 ]

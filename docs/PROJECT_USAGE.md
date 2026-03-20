@@ -38,6 +38,15 @@ powershell -ExecutionPolicy Bypass -File <path-to-skills-cloud-repo>\scripts\ins
 npx openskills sync
 ```
 
+**Single skill only** (GitHub shorthand: clone only that folder from the repo; still uses a full shallow clone under the hood):
+
+```powershell
+npx openskills install your-org/skills-cloud/skills/backend-api
+npx openskills sync
+```
+
+Replace `your-org/skills-cloud` and `backend-api` with your registry and skill id. The web catalog’s OpenSkills section shows the same commands when the configured remote is GitHub.
+
 If you prefer a universal multi-agent path, add `-Universal` to the helper script or:
 
 ```powershell
