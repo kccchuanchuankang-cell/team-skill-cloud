@@ -54,6 +54,21 @@ npx openskills install git@github.com:your-org/skills-cloud.git --universal
 npx openskills sync
 ```
 
+## Pushing local skill edits back to the registry
+
+OpenSkills **`install` / `sync` / `update` (if available)** only pull skills **into** your project. There is **no** command to upload changes from a consuming repo to the skills registry—you use **Git** on the skills repository.
+
+**If you edited an installed copy** (e.g. under `.claude/skills/<skill-id>/` or `.agent/skills/<skill-id>/`, depending on how you installed):
+
+1. **Clone** the team skills repo (if you do not already have it).
+2. **Copy** the whole skill directory from the project into `skills/<skill-id>/` in that clone (replace `SKILL.md`, `meta.json`, `references/`, `scripts/`, etc.).
+3. In the skills repo root, run **`python scripts/validate-skills.py`** and **`powershell -ExecutionPolicy Bypass -File .\scripts\generate-catalog.ps1`**.
+4. **Commit** `skills/<skill-id>/` and `catalog/data/` (and any other touched files), **push**, and open a **PR**.
+
+**To avoid copy-paste:** develop the skill **inside** the skills repo, then in the product project run **`npx openskills install <path-to-local-clone>`** (and `npx openskills sync`). After edits, reinstall or run **`npx openskills update`** if your OpenSkills version records the source. Pinning and non-default branches are covered in [docs/VERSIONING_AND_OPENSKILLS.md](VERSIONING_AND_OPENSKILLS.md).
+
+See also [CONTRIBUTING.md](../CONTRIBUTING.md) for new skills and review expectations.
+
 ## Selecting Skills Per Project
 
 Use a small, curated project skill set.

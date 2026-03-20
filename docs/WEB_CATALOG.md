@@ -65,7 +65,7 @@ Each `meta.json` should contain:
 - `name`
 - `title`
 - `description`
-- `tags`
+- `tags` — short **English** slugs in `meta.json` (stable for tooling); the catalog UI shows **Chinese** labels and searches both slug and label. Optional overrides: add a `tag_labels` object in [`catalog/catalog-config.json`](../catalog/catalog-config.json), e.g. `"tag_labels": { "my-tag": "我的标签" }`.
 - `owner`
 - `version` — SemVer string for this skill (see [GOVERNANCE.md](GOVERNANCE.md#per-skill-version-in-metajson); validated by `validate-skills.py`)
 - `summary`

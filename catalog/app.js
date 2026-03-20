@@ -2,12 +2,34 @@ const skills = Array.isArray(window.SKILLS_DATA) ? window.SKILLS_DATA : [];
 
 /** UI 文案为简体中文；技能标题/描述仍来自 meta.json */
 
-function tagLabel(tag) {
-  return tag === "all" ? "全部" : tag;
-}
+/** meta.json 仍用英文 slug；界面展示中文。未列出的 slug 原样显示，也可用 catalog-config.json 的 tag_labels 覆盖 */
+const TAG_LABELS_ZH = {
+  bitbucket: "Bitbucket",
+  "code-review": "代码审查",
+  java: "Java",
+  "pull-request": "拉取请求",
+  prereview: "预审",
+  release: "发布",
+  review: "审查",
+  qa: "质量保障",
+  frontend: "前端",
+  react: "React",
+  ui: "界面",
+  backend: "后端",
+  api: "API",
+  validation: "校验",
+  todo: "待补充"
+};
 
 const rawCatalogConfig =
   window.CATALOG_CONFIG && typeof window.CATALOG_CONFIG === "object" ? window.CATALOG_CONFIG : {};
+
+const catalogTagLabels =
+  rawCatalogConfig.tag_labels &&
+  typeof rawCatalogConfig.tag_labels === "object" &&
+  !Array.isArray(rawCatalogConfig.tag_labels)
+    ? rawCatalogConfig.tag_labels
+    : {};
 
 const catalogConfig = {
   skills_repo_ssh: rawCatalogConfig.skills_repo_ssh || "git@github.com:your-org/skills-cloud.git",
@@ -15,8 +37,20 @@ const catalogConfig = {
   config_note: rawCatalogConfig.config_note || "",
   repo_web_base: rawCatalogConfig.repo_web_base || "",
   source_ref: rawCatalogConfig.source_ref || "",
-  remote_detected: Boolean(rawCatalogConfig.remote_detected)
+  remote_detected: Boolean(rawCatalogConfig.remote_detected),
+  tag_labels: catalogTagLabels
 };
+
+function tagDisplayZh(slug) {
+  if (!slug || slug === "all") {
+    return "全部";
+  }
+  const fromFile = catalogConfig.tag_labels[slug];
+  if (typeof fromFile === "string" && fromFile.trim()) {
+    return fromFile.trim();
+  }
+  return TAG_LABELS_ZH[slug] ?? slug;
+}
 
 const state = {
   search: "",
@@ -203,7 +237,8 @@ function buildTagFiltersOnce() {
     button.type = "button";
     button.className = "tag-button";
     button.dataset.tag = tag;
-    button.textContent = tagLabel(tag);
+    button.textContent = tagDisplayZh(tag);
+    button.title = tag === "all" ? "全部标签" : `英文标识：${tag}`;
     button.addEventListener("click", () => {
       state.tag = tag;
       render();
@@ -225,13 +260,14 @@ function matchesSearch(skill, search) {
     return true;
   }
 
+  const tagParts = (skill.tags || []).flatMap((t) => [t, tagDisplayZh(t)]);
   const haystack = [
     skill.name,
     skill.title,
     skill.description,
     skill.summary,
     skill.owner,
-    ...(skill.tags || []),
+    ...tagParts,
     ...(skill.use_cases || [])
   ]
     .join(" ")
@@ -285,7 +321,12 @@ function renderList(items) {
       </div>
       <p class="card-desc">${escapeHtml(skill.description)}</p>
       <div class="meta-row">
-        ${(skill.tags || []).map((tag) => `<span class="meta-pill">${escapeHtml(tag)}</span>`).join("")}
+        ${(skill.tags || [])
+          .map(
+            (tag) =>
+              `<span class="meta-pill" title="英文标识：${escapeHtml(tag)}">${escapeHtml(tagDisplayZh(tag))}</span>`
+          )
+          .join("")}
       </div>
       <div class="meta-row meta-row--tight">
         <span class="meta-inline"><span class="meta-inline-label">负责人</span> ${escapeHtml(skill.owner)}</span>
@@ -329,7 +370,12 @@ function renderDetail(items) {
     </div>
     <p class="detail-summary">${escapeHtml(selected.summary)}</p>
     <div class="meta-row">
-      ${(selected.tags || []).map((tag) => `<span class="detail-tag">${escapeHtml(tag)}</span>`).join("")}
+      ${(selected.tags || [])
+        .map(
+          (tag) =>
+            `<span class="detail-tag" title="英文标识：${escapeHtml(tag)}">${escapeHtml(tagDisplayZh(tag))}</span>`
+        )
+        .join("")}
     </div>
     <div class="detail-section">
       <h3>适用场景</h3>

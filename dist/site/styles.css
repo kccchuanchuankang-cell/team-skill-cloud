@@ -469,9 +469,6 @@ select:focus-visible {
 .detail-card {
   border-radius: var(--radius-lg);
   padding: 26px 26px 28px;
-  max-height: min(88vh, 1400px);
-  overflow-y: auto;
-  overscroll-behavior: contain;
 }
 
 .detail-card ul {
@@ -513,8 +510,6 @@ select:focus-visible {
   text-align: center;
   padding-left: 20px;
   padding-right: 20px;
-  max-height: none;
-  overflow: visible;
 }
 
 .empty-state p {
@@ -728,11 +723,6 @@ select:focus-visible {
 
   .detail-column {
     position: static;
-  }
-
-  .detail-card {
-    max-height: none;
-    overflow-y: visible;
   }
 }
 
