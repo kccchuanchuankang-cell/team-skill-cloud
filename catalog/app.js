@@ -78,7 +78,15 @@ function updateListResultCount(items) {
   const total = skills.length;
   const n = items.length;
   const filtered = Boolean(state.search) || state.tag !== "all";
-  elements.listResultCount.textContent = filtered ? `共 ${total} 项 · 当前显示 ${n} 项` : `共 ${n} 项`;
+  if (!filtered) {
+    elements.listResultCount.textContent = "";
+    return;
+  }
+  if (n === 0) {
+    elements.listResultCount.textContent = `共 ${total} 项 · 无匹配`;
+    return;
+  }
+  elements.listResultCount.textContent = `共 ${total} 项 · 当前显示 ${n} 项`;
 }
 
 function escapeHtml(value) {
@@ -271,17 +279,17 @@ function renderList(items) {
     card.setAttribute("aria-pressed", state.selected === skill.name ? "true" : "false");
     card.setAttribute("aria-label", `查看技能：${skill.title}`);
     card.innerHTML = `
-      <div class="card-topline">
-        <span class="meta-pill">v${escapeHtml(skill.version)}</span>
+      <div class="card-head">
+        <h2>${escapeHtml(skill.title)}</h2>
+        <span class="meta-pill meta-pill-version">v${escapeHtml(skill.version)}</span>
       </div>
-      <h2>${escapeHtml(skill.title)}</h2>
-      <p>${escapeHtml(skill.description)}</p>
+      <p class="card-desc">${escapeHtml(skill.description)}</p>
       <div class="meta-row">
         ${(skill.tags || []).map((tag) => `<span class="meta-pill">${escapeHtml(tag)}</span>`).join("")}
       </div>
-      <div class="meta-row">
-        <span class="meta-pill">负责人：${escapeHtml(skill.owner)}</span>
-        <span class="meta-pill">${escapeHtml(skill.name)}</span>
+      <div class="meta-row meta-row--tight">
+        <span class="meta-inline"><span class="meta-inline-label">负责人</span> ${escapeHtml(skill.owner)}</span>
+        <span class="meta-inline meta-inline-mono">${escapeHtml(skill.name)}</span>
       </div>
     `;
     card.addEventListener("click", () => {
@@ -315,11 +323,11 @@ function renderDetail(items) {
 
   elements.detail.className = "detail-card";
   elements.detail.innerHTML = `
-    <div class="detail-topline">
-      <span class="meta-pill">v${escapeHtml(selected.version)}</span>
+    <div class="detail-head">
+      <h2>${escapeHtml(selected.title)}</h2>
+      <span class="meta-pill meta-pill-version">v${escapeHtml(selected.version)}</span>
     </div>
-    <h2>${escapeHtml(selected.title)}</h2>
-    <p>${escapeHtml(selected.summary)}</p>
+    <p class="detail-summary">${escapeHtml(selected.summary)}</p>
     <div class="meta-row">
       ${(selected.tags || []).map((tag) => `<span class="detail-tag">${escapeHtml(tag)}</span>`).join("")}
     </div>
@@ -329,14 +337,18 @@ function renderDetail(items) {
         ${(selected.use_cases || []).map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
       </ul>
     </div>
-    ${buildOpenskillsSection(selected.name)}
     <div class="detail-section">
       <h3>安装说明</h3>
       <p class="install-hint">${escapeHtml(selected.install_hint)}</p>
     </div>
+    ${buildOpenskillsSection(selected.name)}
     <div class="detail-section">
-      <h3>负责人</h3>
-      <p>${escapeHtml(selected.owner)}</p>
+      <h3>负责人与目录名</h3>
+      <p class="detail-meta-line">
+        <span>${escapeHtml(selected.owner)}</span>
+        <span class="detail-meta-sep" aria-hidden="true">·</span>
+        <code class="skill-id-code">${escapeHtml(selected.name)}</code>
+      </p>
     </div>
     <div class="detail-section">
       <h3>仓库路径</h3>
@@ -354,7 +366,9 @@ function renderDetail(items) {
 }
 
 function renderStats() {
-  elements.count.textContent = skills.length.toString();
+  if (elements.count) {
+    elements.count.textContent = skills.length.toString();
+  }
 }
 
 function render() {

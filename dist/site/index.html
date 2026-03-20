@@ -3,58 +3,59 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
   <title>团队技能目录 · skills-cloud</title>
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,700;1,6..72,400&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
+  <div class="ambient" aria-hidden="true"></div>
   <div class="page-shell">
     <header class="hero">
       <div class="hero-copy">
-        <p class="eyebrow">团队技能目录</p>
-        <h1>浏览可供业务项目安装的技能</h1>
-        <p class="lede">
-          本页数据由仓库中的 <code>meta.json</code> 生成，与仓库内实际技能源保持一致。
+        <p class="eyebrow">
+          团队技能目录
+          <span class="eyebrow-sep" aria-hidden="true">·</span>
+          <span id="skill-count" class="eyebrow-count">0</span>
+          <span class="eyebrow-count-suffix">项</span>
         </p>
-      </div>
-      <div class="hero-panel">
-        <div class="stat">
-          <span class="stat-label">技能数</span>
-          <strong id="skill-count">0</strong>
-        </div>
-        <div class="stat">
-          <span class="stat-label">负责人数</span>
-          <strong id="owner-count">0</strong>
-        </div>
+        <h1><span class="hero-title-en">Skills</span><span class="hero-title-zh">星图</span></h1>
+        <p class="hero-sub">浏览可供业务项目安装的技能包</p>
+        <p class="lede">
+          数据来自各技能目录的 <code>meta.json</code>；点选卡片查看 OpenSkills 命令与仓库路径。链接带 <code>?skill=目录名</code> 可直达某项。
+        </p>
       </div>
     </header>
 
     <section class="controls">
       <label class="search">
         <span>搜索</span>
-        <input id="search-input" type="search" placeholder="按名称、标签或适用场景搜索">
+        <input id="search-input" type="search" placeholder="名称、标签、场景…" autocomplete="off" aria-label="搜索技能">
       </label>
-      <label class="filter">
-        <span>状态</span>
-        <select id="status-filter">
-          <option value="all">全部</option>
-        </select>
-      </label>
-      <div class="legend">
-        <span>数据来自各技能的 <code>meta.json</code></span>
-      </div>
     </section>
 
-    <main class="content-grid">
-      <section class="catalog-column">
-        <div id="tag-filters" class="tag-filters"></div>
-        <div id="skill-list" class="skill-list"></div>
+    <main class="content-grid" id="main-catalog" aria-label="技能目录与详情">
+      <section class="catalog-column" aria-labelledby="heading-tags">
+        <div class="tags-block">
+          <h2 id="heading-tags" class="column-heading">标签</h2>
+          <div id="tag-filters" class="tag-filters" role="group" aria-label="按标签筛选"></div>
+        </div>
+        <div class="list-block">
+          <div class="list-toolbar">
+            <h2 id="heading-list" class="column-heading">技能列表</h2>
+            <p id="list-result-count" class="list-result-count" aria-live="polite"></p>
+          </div>
+          <div id="skill-list" class="skill-list"></div>
+        </div>
       </section>
 
-      <aside id="detail-column" class="detail-column">
-        <div id="skill-detail" class="detail-card empty-state">
+      <aside id="detail-column" class="detail-column" aria-label="选中技能详情">
+        <div id="skill-detail" class="detail-card empty-state" tabindex="-1" role="region" aria-label="技能详情">
           <h2>请选择一项技能</h2>
-          <p>点击左侧卡片查看负责人、使用场景、安装说明与仓库路径。</p>
+          <p>在列表中点击卡片，查看负责人、场景、OpenSkills 命令与仓库路径。</p>
         </div>
       </aside>
     </main>

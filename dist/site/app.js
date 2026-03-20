@@ -1,16 +1,6 @@
 const skills = Array.isArray(window.SKILLS_DATA) ? window.SKILLS_DATA : [];
 
 /** UI 文案为简体中文；技能标题/描述仍来自 meta.json */
-const STATUS_LABELS = {
-  active: "启用",
-  draft: "草案",
-  deprecated: "已废弃",
-  archived: "已归档"
-};
-
-function statusLabel(status) {
-  return STATUS_LABELS[status] || status;
-}
 
 function tagLabel(tag) {
   return tag === "all" ? "全部" : tag;
@@ -30,21 +20,74 @@ const catalogConfig = {
 
 const state = {
   search: "",
-  status: "all",
   tag: "all",
   selected: skills[0]?.name ?? null
 };
 
+/** 窄屏下用户点击卡片后，下一次 render 结束时将详情滚入视口 */
+let scrollDetailIntoViewNext = false;
+
 const elements = {
   count: document.getElementById("skill-count"),
-  owners: document.getElementById("owner-count"),
   search: document.getElementById("search-input"),
-  status: document.getElementById("status-filter"),
   tags: document.getElementById("tag-filters"),
   list: document.getElementById("skill-list"),
+  listResultCount: document.getElementById("list-result-count"),
   detail: document.getElementById("skill-detail"),
   detailColumn: document.getElementById("detail-column")
 };
+
+function initSkillFromUrl() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    let name = params.get("skill")?.trim();
+    if (!name && window.location.hash.length > 1) {
+      name = window.location.hash.slice(1).replace(/^skill[=:]/i, "").trim();
+    }
+    if (name && skills.some((s) => s.name === name)) {
+      state.selected = name;
+    }
+  } catch {
+    /* ignore */
+  }
+}
+
+function syncSkillToUrl() {
+  try {
+    const url = new URL(window.location.href);
+    url.hash = "";
+    if (state.selected && skills.some((s) => s.name === state.selected)) {
+      url.searchParams.set("skill", state.selected);
+    } else {
+      url.searchParams.delete("skill");
+    }
+    const next = `${url.pathname}${url.search}`;
+    const cur = `${window.location.pathname}${window.location.search}`;
+    if (next !== cur) {
+      window.history.replaceState(null, "", next);
+    }
+  } catch {
+    /* ignore */
+  }
+}
+
+function updateListResultCount(items) {
+  if (!elements.listResultCount) {
+    return;
+  }
+  const total = skills.length;
+  const n = items.length;
+  const filtered = Boolean(state.search) || state.tag !== "all";
+  if (!filtered) {
+    elements.listResultCount.textContent = "";
+    return;
+  }
+  if (n === 0) {
+    elements.listResultCount.textContent = `共 ${total} 项 · 无匹配`;
+    return;
+  }
+  elements.listResultCount.textContent = `共 ${total} 项 · 当前显示 ${n} 项`;
+}
 
 function escapeHtml(value) {
   return String(value ?? "")
@@ -111,41 +154,36 @@ function buildOpenskillsSection(skillName) {
     </div>
   `;
 
-  const singleSkillBlocks = gh
-    ? `${block("仅安装本技能（GitHub 简写，项目内）", `npx openskills install ${singlePath}\n${sync}`)}${block(
-        "仅安装本技能（GitHub 简写 + .agent/skills）",
-        `npx openskills install ${singlePath} --universal\n${sync}`
-      )}`
-    : `<p class="cmd-note">仅安装一项技能时，OpenSkills 支持 <code>owner/repo/skills/技能目录名</code>。当前 clone 地址无法解析为 github.com 时，请先 <code>git clone</code> 本仓，再执行 <code>npx openskills install ./&lt;克隆路径&gt;/skills/${escapeHtml(
-        skillName
-      )}</code> 与 <code>npx openskills sync</code>。</p>`;
+  const nonGithubNote = `<p class="cmd-note">仓库地址不是 GitHub 时，可先 <code>git clone</code> 本仓，再 <code>npx openskills install ./&lt;克隆路径&gt;/skills/${escapeHtml(
+    skillName
+  )}</code> 与 <code>npx openskills sync</code>；单技能路径格式为 <code>owner/repo/skills/技能目录名</code>。</p>`;
+
+  const moreInner = [
+    block("安装整个技能仓（SSH）", `${installSsh}\n${sync}`),
+    block("安装整个技能仓到 .agent/skills（--universal）", `${universalSsh}\n${sync}`),
+    gh
+      ? block("仅本技能到 .agent/skills", `npx openskills install ${singlePath} --universal\n${sync}`)
+      : nonGithubNote
+  ].join("");
 
   return `
     <div class="detail-section">
-      <h3>OpenSkills 命令</h3>
-      ${noteBlock}
-      ${block("安装技能仓（SSH，项目内）", `${installSsh}\n${sync}`)}
-      ${block("安装技能仓（HTTPS，项目内）", `${installHttps}\n${sync}`)}
-      ${singleSkillBlocks}
-      ${block("安装整个技能仓（通用路径 .agent/skills）", `${universalSsh}\n${sync}`)}
-      ${block("在终端中加载本技能", readCmd)}
+      <h3>OpenSkills</h3>
+      ${gh ? block("仅安装本技能", `npx openskills install ${singlePath}\n${sync}`) : ""}
+      ${block("安装整个技能仓（HTTPS，推荐）", `${installHttps}\n${sync}`)}
+      ${block("在终端加载本技能", readCmd)}
+      <details class="cmd-more">
+        <summary>更多安装方式（SSH、通用路径等）</summary>
+        <div class="cmd-more-body">
+          ${moreInner}
+        </div>
+      </details>
     </div>
   `;
 }
 
 function uniqueValues(items) {
   return [...new Set(items)].sort((a, b) => a.localeCompare(b));
-}
-
-function renderStatusOptions() {
-  const statuses = uniqueValues(skills.map((skill) => skill.status).filter(Boolean));
-
-  statuses.forEach((status) => {
-    const option = document.createElement("option");
-    option.value = status;
-    option.textContent = statusLabel(status);
-    elements.status.appendChild(option);
-  });
 }
 
 let tagFiltersBuilt = false;
@@ -205,9 +243,8 @@ function matchesSearch(skill, search) {
 function filteredSkills() {
   return skills.filter((skill) => {
     const tagMatch = state.tag === "all" || (skill.tags || []).includes(state.tag);
-    const statusMatch = state.status === "all" || skill.status === state.status;
     const searchMatch = matchesSearch(skill, state.search);
-    return tagMatch && statusMatch && searchMatch;
+    return tagMatch && searchMatch;
   });
 }
 
@@ -238,29 +275,33 @@ function renderList(items) {
     const card = document.createElement("article");
     card.className = `skill-card${state.selected === skill.name ? " is-selected" : ""}`;
     card.tabIndex = 0;
+    card.setAttribute("role", "button");
+    card.setAttribute("aria-pressed", state.selected === skill.name ? "true" : "false");
+    card.setAttribute("aria-label", `查看技能：${skill.title}`);
     card.innerHTML = `
-      <div class="card-topline">
-        <span class="pill">${escapeHtml(statusLabel(skill.status))}</span>
-        <span class="meta-pill">v${escapeHtml(skill.version)}</span>
+      <div class="card-head">
+        <h2>${escapeHtml(skill.title)}</h2>
+        <span class="meta-pill meta-pill-version">v${escapeHtml(skill.version)}</span>
       </div>
-      <h2>${escapeHtml(skill.title)}</h2>
-      <p>${escapeHtml(skill.description)}</p>
+      <p class="card-desc">${escapeHtml(skill.description)}</p>
       <div class="meta-row">
         ${(skill.tags || []).map((tag) => `<span class="meta-pill">${escapeHtml(tag)}</span>`).join("")}
       </div>
-      <div class="meta-row">
-        <span class="meta-pill">负责人：${escapeHtml(skill.owner)}</span>
-        <span class="meta-pill">${escapeHtml(skill.name)}</span>
+      <div class="meta-row meta-row--tight">
+        <span class="meta-inline"><span class="meta-inline-label">负责人</span> ${escapeHtml(skill.owner)}</span>
+        <span class="meta-inline meta-inline-mono">${escapeHtml(skill.name)}</span>
       </div>
     `;
     card.addEventListener("click", () => {
       state.selected = skill.name;
+      scrollDetailIntoViewNext = window.matchMedia("(max-width: 920px)").matches;
       render();
     });
     card.addEventListener("keydown", (event) => {
       if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();
         state.selected = skill.name;
+        scrollDetailIntoViewNext = window.matchMedia("(max-width: 920px)").matches;
         render();
       }
     });
@@ -275,19 +316,18 @@ function renderDetail(items) {
     elements.detail.className = "detail-card empty-state";
     elements.detail.innerHTML = `
       <h2>未选中技能</h2>
-      <p>${items.length === 0 ? "没有符合当前筛选的技能，请调整搜索或筛选条件。" : "请在左侧选择一项技能。"}</p>
+      <p>${items.length === 0 ? "没有符合当前筛选的技能，请调整搜索或筛选条件。" : "请在列表中选择一项技能。"}</p>
     `;
     return;
   }
 
   elements.detail.className = "detail-card";
   elements.detail.innerHTML = `
-    <div class="detail-topline">
-      <span class="pill">${escapeHtml(statusLabel(selected.status))}</span>
-      <span class="meta-pill">v${escapeHtml(selected.version)}</span>
+    <div class="detail-head">
+      <h2>${escapeHtml(selected.title)}</h2>
+      <span class="meta-pill meta-pill-version">v${escapeHtml(selected.version)}</span>
     </div>
-    <h2>${escapeHtml(selected.title)}</h2>
-    <p>${escapeHtml(selected.summary)}</p>
+    <p class="detail-summary">${escapeHtml(selected.summary)}</p>
     <div class="meta-row">
       ${(selected.tags || []).map((tag) => `<span class="detail-tag">${escapeHtml(tag)}</span>`).join("")}
     </div>
@@ -297,14 +337,18 @@ function renderDetail(items) {
         ${(selected.use_cases || []).map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
       </ul>
     </div>
-    ${buildOpenskillsSection(selected.name)}
     <div class="detail-section">
       <h3>安装说明</h3>
-      <p><code>${escapeHtml(selected.install_hint)}</code></p>
+      <p class="install-hint">${escapeHtml(selected.install_hint)}</p>
     </div>
+    ${buildOpenskillsSection(selected.name)}
     <div class="detail-section">
-      <h3>负责人</h3>
-      <p>${escapeHtml(selected.owner)}</p>
+      <h3>负责人与目录名</h3>
+      <p class="detail-meta-line">
+        <span>${escapeHtml(selected.owner)}</span>
+        <span class="detail-meta-sep" aria-hidden="true">·</span>
+        <code class="skill-id-code">${escapeHtml(selected.name)}</code>
+      </p>
     </div>
     <div class="detail-section">
       <h3>仓库路径</h3>
@@ -322,8 +366,9 @@ function renderDetail(items) {
 }
 
 function renderStats() {
-  elements.count.textContent = skills.length.toString();
-  elements.owners.textContent = uniqueValues(skills.map((skill) => skill.owner).filter(Boolean)).length.toString();
+  if (elements.count) {
+    elements.count.textContent = skills.length.toString();
+  }
 }
 
 function render() {
@@ -333,6 +378,16 @@ function render() {
   ensureSelection(items);
   renderList(items);
   renderDetail(items);
+  updateListResultCount(items);
+  syncSkillToUrl();
+  if (scrollDetailIntoViewNext && elements.detailColumn) {
+    scrollDetailIntoViewNext = false;
+    const instant = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    elements.detailColumn.scrollIntoView({
+      behavior: instant ? "auto" : "smooth",
+      block: "nearest"
+    });
+  }
 }
 
 function debounce(fn, ms) {
@@ -348,11 +403,6 @@ const scheduleRenderFromSearch = debounce(() => render(), 120);
 elements.search.addEventListener("input", (event) => {
   state.search = event.target.value.trim();
   scheduleRenderFromSearch();
-});
-
-elements.status.addEventListener("change", (event) => {
-  state.status = event.target.value;
-  render();
 });
 
 if (elements.detailColumn) {
@@ -381,6 +431,6 @@ if (elements.detailColumn) {
   });
 }
 
-renderStatusOptions();
+initSkillFromUrl();
 renderStats();
 render();

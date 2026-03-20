@@ -16,18 +16,17 @@
   <div class="page-shell">
     <header class="hero">
       <div class="hero-copy">
-        <p class="eyebrow">团队技能目录</p>
+        <p class="eyebrow">
+          团队技能目录
+          <span class="eyebrow-sep" aria-hidden="true">·</span>
+          <span id="skill-count" class="eyebrow-count">0</span>
+          <span class="eyebrow-count-suffix">项</span>
+        </p>
         <h1><span class="hero-title-en">Skills</span><span class="hero-title-zh">星图</span></h1>
         <p class="hero-sub">浏览可供业务项目安装的技能包</p>
         <p class="lede">
-          本页由仓库内 <code>meta.json</code> 生成，与源码一致；选中卡片可查看安装命令与路径。
+          数据来自各技能目录的 <code>meta.json</code>；点选卡片查看 OpenSkills 命令与仓库路径。链接带 <code>?skill=目录名</code> 可直达某项。
         </p>
-      </div>
-      <div class="hero-panel">
-        <div class="stat">
-          <span class="stat-label">技能数</span>
-          <strong id="skill-count">0</strong>
-        </div>
       </div>
     </header>
 
@@ -54,7 +53,7 @@
       </section>
 
       <aside id="detail-column" class="detail-column" aria-label="选中技能详情">
-        <div id="skill-detail" class="detail-card empty-state" tabindex="-1">
+        <div id="skill-detail" class="detail-card empty-state" tabindex="-1" role="region" aria-label="技能详情">
           <h2>请选择一项技能</h2>
           <p>在列表中点击卡片，查看负责人、场景、OpenSkills 命令与仓库路径。</p>
         </div>
