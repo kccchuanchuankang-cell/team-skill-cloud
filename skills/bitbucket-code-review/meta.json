@@ -4,7 +4,6 @@
   "description": "Bitbucket Cloud PR diff fetch plus AI prereview against team Java and error-code standards.",
   "tags": ["bitbucket", "code-review", "java", "pull-request", "prereview"],
   "owner": "platform-team",
-  "status": "active",
   "version": "0.1.1",
   "summary": "Use when the user pastes a Bitbucket PR URL or asks for code review, CR, prereview, or 代码审查 with team CODE-STANDARDS and ERROR-CODE-STANDARDS.",
   "use_cases": [

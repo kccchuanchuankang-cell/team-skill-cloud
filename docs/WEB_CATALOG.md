@@ -67,13 +67,14 @@ Each `meta.json` should contain:
 - `description`
 - `tags`
 - `owner`
-- `status`
 - `version` — SemVer string for this skill (see [GOVERNANCE.md](GOVERNANCE.md#per-skill-version-in-metajson); validated by `validate-skills.py`)
 - `summary`
 - `use_cases`
 - `install_hint`
 
 You can extend the schema later, but keep it lightweight at first.
+
+`status` is **not** used: anything merged under `skills/` is treated as available. The catalog generator omits it; if you still have a `status` key in `meta.json`, it is optional and only validated when present (non-empty string).
 
 ## Recommended Workflow
 

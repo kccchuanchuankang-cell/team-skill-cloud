@@ -234,7 +234,6 @@ Get-ChildItem -Path $skillsRoot -Directory | ForEach-Object {
         description = $meta.description
         tags = @($meta.tags)
         owner = $meta.owner
-        status = $meta.status
         version = $meta.version
         summary = $meta.summary
         use_cases = @($meta.use_cases)

@@ -10,7 +10,6 @@ window.SKILLS_DATA = [
                      "validation"
                  ],
         "owner":  "platform-team",
-        "status":  "active",
         "version":  "0.1.0",
         "summary":  "Use this skill for backend endpoints, handler changes, request validation, and response-shape work where client compatibility matters.",
         "use_cases":  [
@@ -36,7 +35,6 @@ window.SKILLS_DATA = [
                      "prereview"
                  ],
         "owner":  "platform-team",
-        "status":  "active",
         "version":  "0.1.1",
         "summary":  "Use when the user pastes a Bitbucket PR URL or asks for code review, CR, prereview, or 代码审查 with team CODE-STANDARDS and ERROR-CODE-STANDARDS.",
         "use_cases":  [
@@ -60,7 +58,6 @@ window.SKILLS_DATA = [
                      "ui"
                  ],
         "owner":  "frontend-team",
-        "status":  "active",
         "version":  "0.1.0",
         "summary":  "Use this skill for React components, pages, client-side interactions, and UI changes that should match existing product patterns.",
         "use_cases":  [
@@ -84,7 +81,6 @@ window.SKILLS_DATA = [
                      "qa"
                  ],
         "owner":  "platform-team",
-        "status":  "active",
         "version":  "0.1.0",
         "summary":  "Use this skill when you want a focused pass on release risk, user-visible regressions, missing validation, and rollback complexity.",
         "use_cases":  [

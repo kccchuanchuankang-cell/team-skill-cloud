@@ -4,7 +4,6 @@
   "description": "Release readiness, regression scanning, and risk-focused review.",
   "tags": ["release", "review", "qa"],
   "owner": "platform-team",
-  "status": "active",
   "version": "0.1.0",
   "summary": "Use this skill when you want a focused pass on release risk, user-visible regressions, missing validation, and rollback complexity.",
   "use_cases": [

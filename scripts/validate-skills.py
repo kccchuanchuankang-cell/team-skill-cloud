@@ -20,7 +20,6 @@ REQUIRED_META_KEYS = (
     "description",
     "tags",
     "owner",
-    "status",
     "version",
     "summary",
     "use_cases",
@@ -87,10 +86,15 @@ def validate_skill_dir(skill_dir: Path) -> list[str]:
     if meta["name"] != name:
         errors.append(f"{rel}/meta.json: name {meta['name']!r} must match folder {name!r}")
 
-    for key in ("title", "description", "owner", "status", "summary", "install_hint"):
+    for key in ("title", "description", "owner", "summary", "install_hint"):
         val = meta.get(key)
         if not isinstance(val, str) or not str(val).strip():
             errors.append(f"{rel}/meta.json: {key} must be a non-empty string")
+
+    if "status" in meta:
+        st = meta["status"]
+        if not isinstance(st, str) or not str(st).strip():
+            errors.append(f"{rel}/meta.json: status must be a non-empty string when present")
 
     ver = meta.get("version")
     if not isinstance(ver, str) or not str(ver).strip():

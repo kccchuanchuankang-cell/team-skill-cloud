@@ -4,7 +4,6 @@
   "description": "Backend API implementation and contract-sensitive server work.",
   "tags": ["backend", "api", "validation"],
   "owner": "platform-team",
-  "status": "active",
   "version": "0.1.0",
   "summary": "Use this skill for backend endpoints, handler changes, request validation, and response-shape work where client compatibility matters.",
   "use_cases": [

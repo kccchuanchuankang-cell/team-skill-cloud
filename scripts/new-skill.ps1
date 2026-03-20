@@ -46,7 +46,6 @@ $meta = [ordered]@{
     description   = "TODO: one-line catalog description"
     tags          = @("todo")
     owner         = "your-team"
-    status        = "draft"
     version       = "0.1.0"
     summary       = "TODO: detail summary (when to use this skill)"
     use_cases     = @("TODO: use case 1", "TODO: use case 2")
