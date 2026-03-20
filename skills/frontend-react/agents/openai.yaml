@@ -1,0 +1,4 @@
+version: 1
+display_name: Frontend React
+short_description: React UI implementation aligned to team frontend conventions
+default_prompt: Help implement React UI changes while preserving the project's visual and interaction patterns.

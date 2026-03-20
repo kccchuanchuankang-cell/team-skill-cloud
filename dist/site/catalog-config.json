@@ -1,0 +1,4 @@
+{
+  "config_note": "可在本文件中覆盖：skills_repo_ssh、skills_repo_https、source_ref（源码链接用的分支或提交）、repo_web_base。若设置 disable_git_origin 为 true，则不再从 git 自动探测。",
+  "disable_git_origin": false
+}

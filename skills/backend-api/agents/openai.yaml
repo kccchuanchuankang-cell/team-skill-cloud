@@ -1,0 +1,4 @@
+version: 1
+display_name: Backend API
+short_description: Backend API implementation and contract-sensitive server work
+default_prompt: Help implement or update backend API behavior while preserving request and response contracts.

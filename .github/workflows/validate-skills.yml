@@ -1,0 +1,39 @@
+name: Validate skills
+
+on:
+  pull_request:
+    paths:
+      - "skills/**"
+      - "catalog/**"
+      - "scripts/generate-catalog.ps1"
+      - "scripts/validate-skills.py"
+      - "catalog/catalog-config.json"
+      - ".github/workflows/validate-skills.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "skills/**"
+      - "catalog/**"
+      - "scripts/generate-catalog.ps1"
+      - "scripts/validate-skills.py"
+      - "catalog/catalog-config.json"
+      - ".github/workflows/validate-skills.yml"
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: windows-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate skill layout and metadata
+        run: python scripts/validate-skills.py
+
+      - name: Regenerate catalog data
+        shell: pwsh
+        run: ./scripts/generate-catalog.ps1
+
+      - name: Ensure catalog output is committed
+        run: git diff --exit-code -- catalog/data/skills.json catalog/data/skills.js

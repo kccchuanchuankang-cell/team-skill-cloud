@@ -1,0 +1,16 @@
+{
+  "name": "frontend-react",
+  "title": "Frontend React",
+  "description": "React UI implementation aligned to team frontend conventions.",
+  "tags": ["frontend", "react", "ui"],
+  "owner": "frontend-team",
+  "status": "active",
+  "version": "0.1.0",
+  "summary": "Use this skill for React components, pages, client-side interactions, and UI changes that should match existing product patterns.",
+  "use_cases": [
+    "Build or refine React pages and components",
+    "Add forms, state transitions, and edge states",
+    "Keep new UI aligned with surrounding design patterns"
+  ],
+  "install_hint": "Install for React applications and full-stack projects with product UI work."
+}

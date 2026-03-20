@@ -1,0 +1,4 @@
+version: 1
+display_name: Release Triage
+short_description: Release readiness, regression scanning, and risk-focused review
+default_prompt: Review changes for release risk, regressions, and missing validation with findings presented first.

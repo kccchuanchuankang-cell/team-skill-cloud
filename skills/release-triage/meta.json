@@ -1,0 +1,16 @@
+{
+  "name": "release-triage",
+  "title": "Release Triage",
+  "description": "Release readiness, regression scanning, and risk-focused review.",
+  "tags": ["release", "review", "qa"],
+  "owner": "platform-team",
+  "status": "active",
+  "version": "0.1.0",
+  "summary": "Use this skill when you want a focused pass on release risk, user-visible regressions, missing validation, and rollback complexity.",
+  "use_cases": [
+    "Review a release candidate for regressions",
+    "Triage risky changes or incidents before shipping",
+    "Call out testing gaps and rollback risk"
+  ],
+  "install_hint": "Install for projects that want a reusable pre-release or regression review workflow."
+}

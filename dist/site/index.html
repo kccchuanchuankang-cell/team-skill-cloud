@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>团队技能目录 · skills-cloud</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="page-shell">
+    <header class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">团队技能目录</p>
+        <h1>浏览可供业务项目安装的技能</h1>
+        <p class="lede">
+          本页数据由仓库中的 <code>meta.json</code> 生成，与仓库内实际技能源保持一致。
+        </p>
+      </div>
+      <div class="hero-panel">
+        <div class="stat">
+          <span class="stat-label">技能数</span>
+          <strong id="skill-count">0</strong>
+        </div>
+        <div class="stat">
+          <span class="stat-label">负责人数</span>
+          <strong id="owner-count">0</strong>
+        </div>
+      </div>
+    </header>
+
+    <section class="controls">
+      <label class="search">
+        <span>搜索</span>
+        <input id="search-input" type="search" placeholder="按名称、标签或适用场景搜索">
+      </label>
+      <label class="filter">
+        <span>状态</span>
+        <select id="status-filter">
+          <option value="all">全部</option>
+        </select>
+      </label>
+      <div class="legend">
+        <span>数据来自各技能的 <code>meta.json</code></span>
+      </div>
+    </section>
+
+    <main class="content-grid">
+      <section class="catalog-column">
+        <div id="tag-filters" class="tag-filters"></div>
+        <div id="skill-list" class="skill-list"></div>
+      </section>
+
+      <aside id="detail-column" class="detail-column">
+        <div id="skill-detail" class="detail-card empty-state">
+          <h2>请选择一项技能</h2>
+          <p>点击左侧卡片查看负责人、使用场景、安装说明与仓库路径。</p>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <script src="./data/skills.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>

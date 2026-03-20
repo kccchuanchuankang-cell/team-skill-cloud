@@ -1,0 +1,16 @@
+{
+  "name": "backend-api",
+  "title": "Backend API",
+  "description": "Backend API implementation and contract-sensitive server work.",
+  "tags": ["backend", "api", "validation"],
+  "owner": "platform-team",
+  "status": "active",
+  "version": "0.1.0",
+  "summary": "Use this skill for backend endpoints, handler changes, request validation, and response-shape work where client compatibility matters.",
+  "use_cases": [
+    "Add or update API endpoints",
+    "Change request validation or response formats",
+    "Refactor controller or service layers with contract awareness"
+  ],
+  "install_hint": "Install for API services and full-stack projects that expose backend endpoints."
+}
