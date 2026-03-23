@@ -27,6 +27,8 @@ This script:
 2. Copies the catalog into `dist/site`
 3. Adds `.nojekyll` for GitHub Pages compatibility
 
+`dist/` is a generated export directory and should not be committed. Recreate it with the export script whenever you need a fresh deploy artifact.
+
 ## Option 1: GitHub Pages
 
 This repository includes a workflow at [deploy-pages.yml](../.github/workflows/deploy-pages.yml).
@@ -106,5 +108,5 @@ Examples:
 
 - Re-run export after any `meta.json` change
 - Commit generated catalog data so local preview stays fast
-- For GitHub Pages, generated `dist/site` does not need to be committed because the workflow rebuilds it
+- Do not commit generated `dist/site`; the workflow or local export step rebuilds it as needed
 - For internal hosting, either publish from CI or publish manually from the exported folder

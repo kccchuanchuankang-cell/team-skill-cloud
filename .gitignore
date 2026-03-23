@@ -1,3 +1,17 @@
 __pycache__/
 *.pyc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
 .DS_Store
+Thumbs.db
+Desktop.ini
+.idea/
+.vscode/
+*.iml
+*.log
+*.tmp
+*.bak
+*.swp
+*.swo
+dist/

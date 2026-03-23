@@ -12,6 +12,8 @@ Recommended defaults:
 
 To browse available skills before installation, use the repository catalog described in [docs/WEB_CATALOG.md](WEB_CATALOG.md).
 
+If you later move to a versioned registry model instead of Git-only installs, see [REGISTRY_SPEC_V1.md](REGISTRY_SPEC_V1.md) and [PROJECT_MANIFEST_V1.md](PROJECT_MANIFEST_V1.md).
+
 ## Installing OpenSkills
 
 You need **[Node.js](https://nodejs.org/) 20.6 or newer** — the published `openskills` package declares `engines.node: '>=20.6.0'`. Verify:

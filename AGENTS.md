@@ -31,6 +31,7 @@ Agents working in this repository should optimize for:
 ## Available Skills In This Repository
 
 - `backend-api`
+- `bitbucket-code-review`
 - `frontend-react`
 - `release-triage`
 

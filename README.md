@@ -29,14 +29,19 @@ skills-cloud/
 │   ├── DEPLOYMENT.md
 │   ├── GOVERNANCE.md
 │   ├── IMPLEMENTATION_PLAN.md
+│   ├── IDEA_PLUGIN_V1.md
+│   ├── PROJECT_MANIFEST_V1.md
 │   ├── PROJECT_USAGE.md
+│   ├── REGISTRY_SPEC_V1.md
 │   ├── VERSIONING_AND_OPENSKILLS.md
 │   └── WEB_CATALOG.md
 ├── scripts/
+│   ├── build-registry.ps1
 │   ├── export-site.ps1
 │   ├── generate-catalog.ps1
 │   ├── install-skills-at-ref.ps1
 │   ├── new-skill.ps1
+│   ├── package-skill.ps1
 │   ├── validate-skills.py
 │   └── watch-catalog.ps1
 ├── .github/
@@ -45,9 +50,11 @@ skills-cloud/
 │   └── CODEOWNERS
 ├── skills/
 │   ├── backend-api/
+│   ├── bitbucket-code-review/
 │   ├── frontend-react/
 │   └── release-triage/
 └── templates/
+    ├── idea-plugin-template/
     └── skill-template/
 ```
 
@@ -69,6 +76,17 @@ skills-cloud/
 6. Upgrade skills intentionally by version or tag, not by surprise.
 
 See [docs/PROJECT_USAGE.md](docs/PROJECT_USAGE.md) for the project-side workflow and [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md) for the rollout plan. [CONTRIBUTING.md](CONTRIBUTING.md) covers validation and catalog regeneration before a PR.
+
+For the next-stage registry direction, see [docs/REGISTRY_SPEC_V1.md](docs/REGISTRY_SPEC_V1.md) and [docs/PROJECT_MANIFEST_V1.md](docs/PROJECT_MANIFEST_V1.md).
+For the first IntelliJ client design, see [docs/IDEA_PLUGIN_V1.md](docs/IDEA_PLUGIN_V1.md).
+
+To generate a first-pass static registry artifact locally, run:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\build-registry.ps1
+```
+
+This writes versioned zip packages and registry indexes to `dist/registry/`.
 
 **Pinning / old versions:** OpenSkills’ `install <git-url>` tracks the default branch only. To install a **tagged** snapshot, use [scripts/install-skills-at-ref.ps1](scripts/install-skills-at-ref.ps1) or the flow in [docs/VERSIONING_AND_OPENSKILLS.md](docs/VERSIONING_AND_OPENSKILLS.md).
 
@@ -96,13 +114,13 @@ For deployment, see [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 - Every skill should have an owner
 - Every skill should state clear trigger conditions
 
-## Initial Skill Set
+## Current Skill Set
 
 - `backend-api`: API implementation and contract-aware backend work
+- `bitbucket-code-review`: Bitbucket Cloud PR diff fetch and team-standard prereview workflow
 - `frontend-react`: React UI work aligned with team frontend conventions
 - `release-triage`: Release checks, regression scanning, and issue triage
 
 ## Next Step
 
-Start by reviewing the sample skills in [skills](skills), then adapt the references and scripts to your team's actual standards and tooling. After that, update the `meta.json` files and regenerate the catalog so the web view stays in sync.
-# team-skill-cloud
+Start by reviewing the current skills in [skills](skills), then adapt the references and scripts to your team's actual standards and tooling. After that, update the `meta.json` files and regenerate the catalog so the web view stays in sync.
