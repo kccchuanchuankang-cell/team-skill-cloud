@@ -1,0 +1,18 @@
+<idea-plugin>
+  <id>com.yourorg.openskills</id>
+  <name>OpenSkills</name>
+  <vendor>Your Org</vendor>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <toolWindow
+        id="OpenSkills"
+        anchor="right"
+        factoryClass="com.yourorg.openskills.ui.toolwindow.OpenSkillsToolWindowFactory" />
+
+    <applicationConfigurable
+        id="openskills.settings"
+        parentId="tools"
+        displayName="OpenSkills"
+        instance="com.yourorg.openskills.settings.OpenSkillsConfigurable" />
+  </extensions>
+</idea-plugin>
