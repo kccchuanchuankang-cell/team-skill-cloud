@@ -54,7 +54,7 @@ skills-cloud/
 │   ├── frontend-react/
 │   └── release-triage/
 └── templates/
-    ├── idea-plugin-starter/
+    ├── openskills-idea-plugin/
     └── skill-template/
 ```
 
@@ -124,4 +124,5 @@ For deployment, see [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 ## Next Step
 
 Start by reviewing the current skills in [skills](skills), then adapt the references and scripts to your team's actual standards and tooling. After that, update the `meta.json` files and regenerate the catalog so the web view stays in sync.
+
 

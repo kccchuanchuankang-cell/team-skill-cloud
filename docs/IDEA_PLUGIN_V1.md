@@ -2,35 +2,67 @@
 
 ## Purpose
 
-This document defines the minimum viable IntelliJ IDEA plugin architecture for consuming an OpenSkills Registry v1 and managing project-installed skills.
+This document defines the minimum viable IntelliJ IDEA plugin architecture for consuming OpenSkills project workflows inside IDEA.
 
-Plugin v1 is a dependency-management client, not an AI chat assistant. Its job is to:
+Plugin v1 is a dependency-management and project-operations client, not an AI chat assistant. Its job is to:
 
-- browse registry skills
-- install versioned skill packages
-- manage project-installed skills
-- update project manifest files
-- trigger sync after install or update
+- inspect project-visible skills
+- visualize skill resolution priority
+- run OpenSkills CLI operations from IDEA
+- provide a stable place to configure the OpenSkills launcher
+- make install, update, remove, and sync easier than memorizing terminal flags
+
+## Product direction
+
+The plugin should be treated as a graphical front end for the OpenSkills CLI.
+
+That means:
+
+- plugin actions should prefer calling the real OpenSkills commands
+- plugin UI should explain scope, priority, and resolved path better than the terminal can
+- plugin state should stay aligned with OpenSkills installation behavior instead of inventing a separate package manager model
+
+The current OpenSkills command surface that shapes the plugin is:
+
+- `openskills install <source> [options]`
+- `openskills sync [-y] [-o <path>]`
+- `openskills list`
+- `openskills read <name>`
+- `openskills update [name...]`
+- `openskills remove <name>`
+- `openskills manage`
+
+The current OpenSkills priority order that shapes the plugin is:
+
+1. `./.agent/skills/`
+2. `~/.agent/skills/`
+3. `./.claude/skills/`
+4. `~/.claude/skills/`
 
 ## Scope
 
 Plugin v1 should support:
 
-- browsing a registry
-- viewing skill details and versions
-- installing a skill into the current project
-- updating or removing installed skills
+- viewing installed and visible project skills
 - reading and writing `openskills.json`
 - reading and writing `openskills.lock.json`
-- triggering a configurable sync command
+- running `openskills list`
+- running `openskills read`
+- running `openskills install`
+- running `openskills update`
+- running `openskills remove`
+- running `openskills sync`
+- configuring the CLI launcher and related defaults
+- visualizing where each visible skill resolves from
 
-Plugin v1 should not support:
+Plugin v1 should not support yet:
 
 - publishing skills
 - approval workflows
 - cross-registry federation
 - transitive dependency resolution
 - interactive AI chat
+- custom installation semantics that diverge from OpenSkills CLI
 
 ## Recommended Tech Stack
 
@@ -38,8 +70,8 @@ Plugin v1 should not support:
 - IntelliJ Platform Plugin SDK
 - Gradle IntelliJ Plugin
 - Java `HttpClient`
-- `kotlinx.serialization` or Jackson for JSON
-- Java ZIP support for archive extraction
+- Jackson for JSON
+- background tasks for all external command execution
 
 ## Project Layout
 
@@ -54,11 +86,9 @@ openskills-idea-plugin/
 │   ├── main/
 │   │   ├── kotlin/
 │   │   │   └── com/yourorg/openskills/
-│   │   │       ├── registry/
+│   │   │       ├── cli/
 │   │   │       ├── manifest/
 │   │   │       ├── install/
-│   │   │       ├── project/
-│   │   │       ├── sync/
 │   │   │       ├── settings/
 │   │   │       └── ui/
 │   │   └── resources/
@@ -73,189 +103,134 @@ openskills-idea-plugin/
 
 ```text
 com.yourorg.openskills
-├── registry
-│   ├── RegistryClient.kt
-│   ├── RegistryModels.kt
-│   └── RegistryService.kt
+├── cli
+│   └── OpenSkillsCliAdapter.kt
 ├── manifest
 │   ├── ManifestModels.kt
-│   ├── ManifestReader.kt
-│   ├── ManifestWriter.kt
 │   └── ProjectManifestService.kt
 ├── install
-│   ├── PackageDownloader.kt
-│   ├── ChecksumVerifier.kt
-│   ├── ZipExtractor.kt
 │   └── SkillInstaller.kt
-├── project
-│   ├── ProjectSkillService.kt
-│   └── ProjectSkillState.kt
-├── sync
-│   ├── SyncCommandRunner.kt
-│   └── SyncService.kt
 ├── settings
 │   ├── PluginSettingsState.kt
 │   ├── PluginSettingsService.kt
 │   └── OpenSkillsConfigurable.kt
 └── ui
-    ├── toolwindow
-    │   ├── OpenSkillsToolWindowFactory.kt
-    │   └── OpenSkillsToolWindowPanel.kt
-    ├── catalog
-    │   └── CatalogPanel.kt
+    ├── install
+    │   └── InstallPanel.kt
     ├── project
     │   └── ProjectPanel.kt
-    └── settings
-        └── SettingsPanel.kt
+    ├── resolution
+    │   └── ResolutionPanel.kt
+    └── toolwindow
+        ├── OpenSkillsToolWindowFactory.kt
+        └── OpenSkillsToolWindowPanel.kt
 ```
 
 ## Tool Window Layout
 
-The plugin should expose a single `OpenSkills` tool window with three tabs:
+The recommended tool window layout is:
 
-1. `Catalog`
-2. `Project`
+1. `Installed`
+2. `Install`
 3. `Settings`
+4. `Resolution`
 
-### Catalog tab
+The current starter now exposes `Installed`, `Install`, `Resolution`, and `Settings`, with CLI-backed workflows as the primary path.
 
-Responsibilities:
-
-- load registry root index
-- search by id, title, tags, and description
-- show skill detail
-- let the user choose a version
-- start install flow
-
-### Project tab
+### Installed tab
 
 Responsibilities:
 
-- show installed skills from `openskills.lock.json`
-- compare installed versions with registry latest
-- allow update, remove, refresh, and sync
+- show skills currently visible to the project
+- show installed project skills from `openskills.lock.json`
+- run `openskills list`
+- allow `Read`, `Update`, `Remove`, `Refresh`, and `Sync`
+- explain whether a skill is coming from project scope or global scope
+
+Recommended columns:
+
+- skill name
+- resolved path
+- scope: project or global
+- mode: universal or claude
+- priority rank
+- status
+
+### Install tab
+
+Responsibilities:
+
+- collect a skill source such as GitHub, local path, or private repo URL
+- let the user choose install mode
+- run `openskills install <source> [flags]`
+
+Recommended install modes:
+
+- `Project Universal`
+- `Global Universal`
+
+Suggested flag mapping:
+
+- `Project Universal` -> `--universal`
+- `Global Universal` -> `--global --universal`
 
 ### Settings tab
 
 Responsibilities:
 
-- configure registry URL
-- configure install path
-- configure sync command
+- configure CLI launcher
+- configure default install mode
+- configure sync output path
 - enable or disable auto-sync
-- allow or disallow prerelease versions
+- allow or disallow prerelease versions for future use
 
-## Core Models
+On Windows, the plugin should support a launcher like:
 
-The plugin should use the Registry v1 and Project Manifest v1 documents as the source contract:
+- `C:\Program Files\nodejs\npx.cmd`
 
-- [REGISTRY_SPEC_V1.md](REGISTRY_SPEC_V1.md)
-- [PROJECT_MANIFEST_V1.md](PROJECT_MANIFEST_V1.md)
+### Resolution tab
 
-Suggested Kotlin models:
+Responsibilities:
 
-```kotlin
-data class RegistryIndex(
-    val registryVersion: String,
-    val generatedAt: String,
-    val skills: List<SkillSummary>
-)
+- visualize OpenSkills priority order
+- show which directory won for each visible skill
+- highlight when a lower-priority skill is shadowed by a higher-priority one
 
-data class SkillSummary(
-    val id: String,
-    val title: String,
-    val description: String,
-    val owner: String,
-    val tags: List<String>,
-    val latestVersion: String,
-    val latestStableVersion: String,
-    val indexUrl: String
-)
+This is one of the main UX wins of the plugin because the terminal output is weaker at showing precedence clearly.
 
-data class SkillVersionIndex(
-    val id: String,
-    val title: String,
-    val description: String,
-    val owner: String,
-    val versions: List<SkillVersion>
-)
+## Command mapping
 
-data class SkillVersion(
-    val version: String,
-    val publishedAt: String,
-    val breaking: Boolean,
-    val manifestVersion: String,
-    val packageUrl: String,
-    val checksumSha256: String,
-    val notesUrl: String?
-)
-```
+Recommended mapping between UI actions and OpenSkills CLI:
 
-## Service Responsibilities
+- `Installed > Refresh` -> `openskills list`
+- `Installed > Read` -> `openskills read <name>`
+- `Installed > Update` -> `openskills update <name>`
+- `Installed > Update All` -> `openskills update`
+- `Installed > Remove` -> `openskills remove <name>`
+- `Installed > Sync` -> `openskills sync`
+- `Install > Install` -> `openskills install <source> --universal [--global] --yes`
 
-### `RegistryClient`
+`manage` can remain out of scope for v1 because it is interactive and less IDE-friendly than direct `remove <name>`.
 
-- fetch root index
-- fetch per-skill index
-- resolve relative URLs against the configured registry base URL
+## Current starter alignment
 
-### `RegistryService`
+The current starter already aligns these actions with the OpenSkills CLI:
 
-- search and filter registry entries
-- choose default install version
-- compare installed and latest versions
+- `Installed > Refresh` -> `openskills list`
+- `Installed > Read` -> `openskills read <name>`
+- `Installed > Update` -> `openskills update <name>`
+- `Installed > Remove` -> `openskills remove <name>`
+- `Installed > Update All` -> `openskills update`
+- `Installed > Sync` -> `openskills sync`
 
-### `ProjectManifestService`
+The starter also includes a configurable CLI launcher so sandboxed IDEA runs can target `npx.cmd` directly.
 
-- locate project manifest files
-- create missing `openskills.json`
-- read and write both manifest and lock files
+## Manifest and install services
 
-### `SkillInstaller`
+The starter still keeps manifest and install helpers because they will be needed for future install, update, and remove flows:
 
-- download package zip
-- verify SHA-256 checksum
-- extract into `.agent/skills/<skill-id>`
-- update `openskills.json`
-- update `openskills.lock.json`
-
-### `SyncService`
-
-- run a configurable sync command
-- surface output and failures to the user
-
-## Install Flow
-
-Recommended install sequence:
-
-1. User selects a skill and version in `Catalog`.
-2. Plugin downloads the package zip.
-3. Plugin verifies checksum.
-4. Plugin extracts the package into the project install path.
-5. Plugin creates or updates `openskills.json`.
-6. Plugin creates or updates `openskills.lock.json`.
-7. Plugin runs sync if enabled.
-8. Plugin refreshes `Project` tab state.
-
-## Update Flow
-
-Recommended update sequence:
-
-1. Read current installed version from `openskills.lock.json`.
-2. Read latest available version from the registry.
-3. Confirm the target version with the user.
-4. Download and replace the package contents.
-5. Rewrite `openskills.lock.json`.
-6. Re-run sync.
-
-## Remove Flow
-
-Recommended remove sequence:
-
-1. Remove the skill from `openskills.json`.
-2. Delete the local installed skill directory.
-3. Rewrite `openskills.lock.json`.
-4. Re-run sync.
+- `ProjectManifestService` locates and updates `openskills.json` and `openskills.lock.json`
+- `SkillInstaller` remains a prototype helper while direct `openskills install` UI wiring is finalized
 
 ## Minimal `plugin.xml`
 
@@ -263,29 +238,7 @@ The plugin needs:
 
 - tool window registration
 - persistent settings
-- optional project service registrations
-
-Example:
-
-```xml
-<idea-plugin>
-  <id>com.yourorg.openskills</id>
-  <name>OpenSkills</name>
-  <vendor>Your Org</vendor>
-
-  <extensions defaultExtensionNs="com.intellij">
-    <toolWindow
-        id="OpenSkills"
-        anchor="right"
-        factoryClass="com.yourorg.openskills.ui.toolwindow.OpenSkillsToolWindowFactory" />
-
-    <applicationConfigurable
-        id="openskills.settings"
-        displayName="OpenSkills"
-        instance="com.yourorg.openskills.settings.OpenSkillsConfigurable" />
-  </extensions>
-</idea-plugin>
-```
+- application configurable registration
 
 ## Minimal `build.gradle.kts`
 
@@ -314,34 +267,41 @@ dependencies {
     }
 }
 
+intellijPlatform {
+    instrumentCode = false
+    buildSearchableOptions = false
+}
+
 kotlin {
-    jvmToolchain(21)
+    jvmToolchain(17)
 }
 ```
 
-## First Development Milestone
+## First development milestone
 
 The first shippable milestone should do only this:
 
 1. open the `OpenSkills` tool window
-2. save a registry URL in settings
-3. fetch `registry/index.json`
-4. display the list of skills in `Catalog`
-5. show per-skill detail from the per-skill index
+2. save a CLI launcher in settings
+3. run `openskills list`
+4. show installed project skills from the lock file
+5. run `openskills sync`
 
 That milestone is enough to validate:
 
-- registry format
-- HTTP client behavior
-- UI layout
-- state management approach
+- OpenSkills CLI integration inside IDEA
+- background task execution
+- settings persistence
+- project-side manifest inspection
 
-## Recommended Next Steps
+## Recommended next steps
 
-1. Create a separate plugin repository using this structure.
-2. Implement the first milestone only.
-3. Test against the static registry generated by this repository.
-4. Add install flow after registry browsing is stable.
+1. Add an `Install` tab that maps directly to `openskills install <source> [flags]`.
+2. Add a `Resolution` tab that visualizes the official OpenSkills priority order.
+3. Add `Update All` to the installed-skills view.
+4. Only bring registry browsing back if it becomes a thin enhancement over the official install workflow.
 
-This repository also includes a copyable starter at [templates/idea-plugin-starter](../templates/idea-plugin-starter).
+This repository also includes a copyable starter at [templates/openskills-idea-plugin](../templates/openskills-idea-plugin).
+
+
 
